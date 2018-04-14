@@ -105,7 +105,6 @@ case_divide:
     addl $4, %esp
 
     movl first_number, %eax
-    movl second_number, %ebx
     cmpl $0, %eax
     jl divide_switch_sign
     jmp divide
@@ -115,18 +114,15 @@ divide_switch_sign:
     incl %eax
     not %ebx
     incl %ebx
-    jmp divide
 
 divide:
     movl $0, %edx
-    idivl %ebx
+    idivl second_number
 
-    pushl %eax
     pushl %edx
     pushl $printf_remainder
     call printf
     addl $8, %esp
-    popl %eax
 
     jmp result
 
@@ -140,7 +136,11 @@ case_power:
 
     movl first_number, %eax
     movl first_number, %ebx
-    jmp power_loop
+
+power_loop:
+    mull %ebx
+    loop power_loop
+    jmp result
 
 power_one:
     movl $1, %eax
@@ -148,14 +148,6 @@ power_one:
 
 power_exception:
     pushl $error_negative_power
-    jmp error
-
-power_loop:
-    decl %ecx
-    testl %ecx, %ecx
-    jz result
-    mull %ebx
-    jmp power_loop
 
 error:
     pushl $printf_error
