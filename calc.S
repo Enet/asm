@@ -116,7 +116,7 @@ divide_switch_sign:
     incl %ebx
 
 divide:
-    movl $0, %edx
+    xor %edx, %edx
     idivl second_number
 
     pushl %edx
