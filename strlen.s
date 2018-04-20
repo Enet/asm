@@ -12,7 +12,7 @@ main:
     xor %eax, %eax
     movl $data, %edi
     repne scasb
-    not %ecx
+    notl %ecx
     decl %ecx
 
     pushl %ecx
