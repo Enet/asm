@@ -1,3 +1,5 @@
+/* JSON parser and JSON generator */
+
 .set UNDEFINED, 0x0
 .set NULL, 0x1
 .set BOOLEAN, 0x2
