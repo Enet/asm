@@ -24,16 +24,13 @@
         .long parse_number_even_mode
 
 .bss
-    json:
+    input:
         .space MAX_SIZE
     buffer:
         .space MAX_SIZE
     output:
         .space MAX_SIZE
 
-.data
-    input:
-        .string "[\"asdf\", [1, 2, 3], \n [ \n null   ],[[[false]]], { \n\n  }, {\"x\":\n {\"z\": 123}}]"
 .text
     .globl _start
 
@@ -54,7 +51,7 @@ open:
 read:
     movl $3, %eax
     movl (%esp), %ebx
-    movl $json, %ecx
+    movl $input, %ecx
     movl $MAX_SIZE, %edx
     int $0x80
     testl %eax, %eax
@@ -68,7 +65,7 @@ close:
 parsing:
     pushl $NO_NESTING
     pushl $buffer
-    pushl $json
+    pushl $input
     call parse_json
     addl $12, %esp
 
