@@ -14,8 +14,6 @@
 .set MAX_SIZE, 32768
 
 .section .rodata
-    printf_string:
-        .string "%s\n"
     parse_number_table:
         .long parse_number_even_mode
         .long parse_number_odd_mode
@@ -24,6 +22,8 @@
         .long parse_number_even_mode
 
 .bss
+    json:
+        .space MAX_SIZE
     buffer:
         .space MAX_SIZE
     output:
@@ -38,10 +38,35 @@
 
 
 _start:
+    movl 8(%esp), %ebx
+
+open:
+    movl $5, %eax
+    movl $0, %ecx /* read only mode */
+    int $0x80
+    testl %eax, %eax
+    cmpl $0, %eax
+    jl error
+    pushl %eax
+
+read:
+    movl $3, %eax
+    movl (%esp), %ebx
+    movl $json, %ecx
+    movl $MAX_SIZE, %edx
+    int $0x80
+    testl %eax, %eax
+    jz error
+
+close:
+    movl $6, %eax
+    popl %ebx
+    int $0x80
+
 parsing:
     pushl $NO_NESTING
     pushl $buffer
-    pushl $input
+    pushl $json
     call parse_json
     addl $12, %esp
 
